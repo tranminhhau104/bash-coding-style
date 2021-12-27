@@ -19,7 +19,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        SIT_AU: [1, 'as2sdf', 'please work']
     steps:
       - uses: actions/checkout@v2
 
@@ -28,3 +30,4 @@ jobs:
           echo "environment is ${{ github.event.inputs.environment }}"
           echo "boolean is ${{ github.event.inputs.boolean }}"
           echo "choice is ${{ github.event.inputs.choice }}"
+          echo "matrix is ${{ matrix.SIT_AU }}"
