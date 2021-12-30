@@ -17,17 +17,23 @@ on:
         - bar
         - baz
 jobs:
-  build:
+  deploy:
+    name: Upload to Amazon S3
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        SIT_AU: [1, 'as2sdf', 'please work']
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      - name: greet
-        run: | 
-          echo "environment is ${{ github.event.inputs.environment }}"
-          echo "boolean is ${{ github.event.inputs.boolean }}"
-          echo "choice is ${{ github.event.inputs.choice }}"
-          echo "matrix is ${{ matrix.SIT_AU[0] }}"
+    - name: Configure AWS credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::211687961943:role/github-role-Role-68EVZ8IQ64BR
+        aws-region: us-east-1
+
+    - name: Copy files to the test website with the AWS CLI
+      run: |
+        aws s3 ls
